@@ -49,7 +49,13 @@ func NewServer(templateFolderPath string, repo Repo) (*Server, error) {
 
 	router.HandleFunc("/delete", func(writer http.ResponseWriter, request *http.Request) {
 		request.ParseMultipartForm(1024)
-		repo.DeleteTodo(request.PostForm.Get("id"))
+		id := request.PostForm.Get("id")
+		name := repo.GetTodo(id).Name
+		repo.DeleteTodo(id)
+		writer.Header().Add("content-type", "text/vnd.turbo-stream.html")
+
+		todoTemplate.ExecuteTemplate(writer, "toaster.partial.gohtml", name)
+		todoTemplate.ExecuteTemplate(writer, "replace-todo-list-stream.gohtml", repo.GetTodos())
 		http.Redirect(writer, request, "/", http.StatusSeeOther)
 	}).Methods(http.MethodPost)
 
