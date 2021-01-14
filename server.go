@@ -2,10 +2,9 @@ package todo
 
 import (
 	"fmt"
-	"html/template"
-	"log"
-	"net/http"
 	"github.com/gorilla/mux"
+	"html/template"
+	"net/http"
 )
 
 type Repo interface {
@@ -17,7 +16,7 @@ type Repo interface {
 type Server struct {
 	todoTemplate *template.Template
 	repo         Repo
-	router 		 *mux.Router
+	router       *mux.Router
 }
 
 func NewServer(templateFolderPath string, repo Repo) (*Server, error) {
@@ -45,10 +44,7 @@ func NewServer(templateFolderPath string, repo Repo) (*Server, error) {
 			fmt.Fprintf(writer, "couldn't parse the form %v", err)
 			return
 		}
-		log.Println(request.PostForm)
-		log.Println(request.Form)
 		repo.AddTodo(request.PostForm.Get("new-item"))
-
 		http.Redirect(writer, request, "/", http.StatusSeeOther)
 	}).Methods(http.MethodPost)
 
@@ -62,7 +58,11 @@ func NewServer(templateFolderPath string, repo Repo) (*Server, error) {
 		http.Redirect(writer, request, "/", http.StatusSeeOther)
 	}).Methods(http.MethodPost)
 
-	return &Server{todoTemplate: todoTemplate, repo: repo, router: router}, nil
+	return &Server{
+		todoTemplate: todoTemplate,
+		repo:         repo,
+		router:       router,
+	}, nil
 }
 
 func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
