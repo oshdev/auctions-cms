@@ -15,7 +15,7 @@ func main() {
 	}
 
 	log.Println("listening on", addr)
-	if http.ListenAndServe(addr, server); err != nil {
+	if err := http.ListenAndServe(addr, server); err != nil {
 		log.Fatal("cannot listen and serve", err)
 	}
 }
