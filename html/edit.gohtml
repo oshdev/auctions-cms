@@ -1,0 +1,18 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>TODO</title>
+    <script type="module" src="https://cdn.skypack.dev/@hotwired/turbo"></script>
+</head>
+<body>
+<h1>Edit a Todo</h1>
+<form method="post">
+    <fieldset>
+        <legend>Edit {{.Name}}</legend>
+        <label for="updated-name">Task name</label>
+        <input type="text" id="updated-name" name="updated-name" value="{{.Name}}" />
+        <input type="submit" value="Update">
+    </fieldset>
+</form>
+</body>
+</html>

@@ -10,6 +10,23 @@ func NewInMemoryRepo() *InMemoryRepo {
 	return &InMemoryRepo{todos: todos}
 }
 
+func (i *InMemoryRepo) GetTodo(id string) Todo {
+	for _, todo := range i.todos {
+		if todo.ID==id {
+			return todo
+		}
+	}
+	return NewTodo("wtf this doesnt exist")
+}
+
+func (i *InMemoryRepo) EditTodo(id string, name string) {
+	for index := range i.todos {
+		if i.todos[index].ID == id {
+			i.todos[index].Name = name
+		}
+	}
+}
+
 func (i *InMemoryRepo) GetTodos() []Todo {
 	return i.todos
 }

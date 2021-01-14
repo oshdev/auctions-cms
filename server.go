@@ -2,15 +2,18 @@ package todo
 
 import (
 	"fmt"
-	"github.com/gorilla/mux"
 	"html/template"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 type Repo interface {
 	GetTodos() []Todo
 	AddTodo(name string)
 	DeleteTodo(id string)
+	GetTodo(id string) Todo
+	EditTodo(id string, name string)
 }
 
 type Server struct {
@@ -40,21 +43,28 @@ func NewServer(templateFolderPath string, repo Repo) (*Server, error) {
 
 	router.HandleFunc("/add", func(writer http.ResponseWriter, request *http.Request) {
 		request.ParseMultipartForm(1024)
-		if err := request.ParseForm(); err != nil {
-			fmt.Fprintf(writer, "couldn't parse the form %v", err)
-			return
-		}
 		repo.AddTodo(request.PostForm.Get("new-item"))
 		http.Redirect(writer, request, "/", http.StatusSeeOther)
 	}).Methods(http.MethodPost)
 
 	router.HandleFunc("/delete", func(writer http.ResponseWriter, request *http.Request) {
-		if err := request.ParseForm(); err != nil {
-			fmt.Fprintf(writer, "couldn't parse the form %v", err)
-			return
-		}
-		id := request.FormValue("id")
-		repo.DeleteTodo(id)
+		request.ParseMultipartForm(1024)
+		repo.DeleteTodo(request.PostForm.Get("id"))
+		http.Redirect(writer, request, "/", http.StatusSeeOther)
+	}).Methods(http.MethodPost)
+
+	router.HandleFunc("/edit/{id}", func(writer http.ResponseWriter, request *http.Request) {
+		vars := mux.Vars(request)
+		id := vars["id"]
+		todoTemplate.ExecuteTemplate(writer, "edit.gohtml", repo.GetTodo(id))
+	}).Methods(http.MethodGet)
+
+	router.HandleFunc("/edit/{id}", func(writer http.ResponseWriter, request *http.Request) {
+		vars := mux.Vars(request)
+		request.ParseMultipartForm(1024)
+
+		id := vars["id"]
+		repo.EditTodo(id, request.PostForm.Get("updated-name"))
 		http.Redirect(writer, request, "/", http.StatusSeeOther)
 	}).Methods(http.MethodPost)
 
