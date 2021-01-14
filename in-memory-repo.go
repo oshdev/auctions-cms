@@ -18,14 +18,6 @@ func (i *InMemoryRepo) AddTodo(name string) {
 	i.todos = append(i.todos, NewTodo(name))
 }
 
-func (i *InMemoryRepo) ToggleTodoComplete(id string) {
-	for index := range i.todos {
-		if i.todos[index].ID==id {
-			i.todos[index].Completed = true
-		}
-	}
-}
-
 func (i *InMemoryRepo) DeleteTodo(id string) {
 	var newList []Todo
 	for _, todo := range i.todos {
@@ -35,4 +27,3 @@ func (i *InMemoryRepo) DeleteTodo(id string) {
 	}
 	i.todos = newList
 }
-

@@ -9,13 +9,12 @@ import (
 type Repo interface {
 	GetTodos() []Todo
 	AddTodo(name string)
-	ToggleTodoComplete(id string)
 	DeleteTodo(id string)
 }
 
 type Server struct {
 	todoTemplate *template.Template
-	repo Repo
+	repo         Repo
 }
 
 func NewServer(templateFolderPath string, repo Repo) (*Server, error) {
@@ -31,7 +30,24 @@ func NewServer(templateFolderPath string, repo Repo) (*Server, error) {
 }
 
 func (t *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if r.Method==http.MethodGet {
+	if r.Method == http.MethodGet {
 		t.todoTemplate.Execute(w, t.repo.GetTodos())
+		return
+	}
+
+	if r.Method == http.MethodPost {
+		if err := r.ParseForm(); err != nil {
+			fmt.Fprintf(w, "couldn't parse the form %v", err)
+			return
+		}
+
+		if r.URL.Path == "/delete" {
+			id := r.FormValue("id")
+			t.repo.DeleteTodo(id)
+		} else {
+			t.repo.AddTodo(r.FormValue("new-item"))
+		}
+
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
 }

@@ -9,15 +9,21 @@
     <fieldset>
         <legend>Add a new thing to do</legend>
         <label for="new-item">Task name</label>
-        <input type="text" id="new-item" />
+        <input type="text" id="new-item" name="new-item" />
         <input type="submit" value="Add">
     </fieldset>
 </form>
 <h2>Your to do list</h2>
-<ol>
-    {{range .}}
-        <li>{{.Name}}</li>
-    {{end}}
-</ol>
+    <ol>
+        {{range .}}
+            <li>
+                {{.Name}}
+                <form method="post" action="/delete">
+                    <input type="hidden" name="id" value="{{.ID}}" />
+                    <input type="submit" value="Delete" />
+                </form>
+            </li>
+        {{end}}
+    </ol>
 </body>
 </html>
