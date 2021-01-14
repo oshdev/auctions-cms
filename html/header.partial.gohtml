@@ -2,4 +2,30 @@
   <meta charset="utf-8">
   <title>TODO</title>
   <script type="module" src="https://cdn.skypack.dev/@hotwired/turbo"></script>
+  <style>
+    @keyframes popup {
+      0% {
+        visibility: visible;
+      }
+
+      50% {
+        visibility: visible;
+        max-height: 100px;
+        transform: translateY(50px);
+      }
+
+      100% {
+        visibility: visible;
+        transform: translateY(-50px);
+      }
+    }
+
+    .toaster {
+      animation: popup 5s;
+      visibility: hidden;
+      position: absolute;
+      top: 0;
+      max-height: 0;
+    }
+  </style>
 </head>
