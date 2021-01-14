@@ -3,6 +3,7 @@ package todo
 import (
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 	"github.com/gorilla/mux"
 )
@@ -39,11 +40,14 @@ func NewServer(templateFolderPath string, repo Repo) (*Server, error) {
 	}).Methods(http.MethodGet)
 
 	router.HandleFunc("/add", func(writer http.ResponseWriter, request *http.Request) {
+		request.ParseMultipartForm(1024)
 		if err := request.ParseForm(); err != nil {
 			fmt.Fprintf(writer, "couldn't parse the form %v", err)
 			return
 		}
-		repo.AddTodo(request.FormValue("new-item"))
+		log.Println(request.PostForm)
+		log.Println(request.Form)
+		repo.AddTodo(request.PostForm.Get("new-item"))
 
 		http.Redirect(writer, request, "/", http.StatusSeeOther)
 	}).Methods(http.MethodPost)
