@@ -6,7 +6,8 @@
 </head>
 <body>
 <h1>Edit a Todo</h1>
-<form method="post">
+<turbo-frame id="edit-todo-{{.ID}}">
+<form method="post" action="/edit/{{.ID}}" data-turbo-frame="todo-list">
     <fieldset>
         <legend>Edit {{.Name}}</legend>
         <label for="updated-name">Task name</label>
@@ -14,5 +15,6 @@
         <input type="submit" value="Update">
     </fieldset>
 </form>
+</turbo-frame>
 </body>
 </html>

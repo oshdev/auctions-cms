@@ -19,7 +19,9 @@
                     <input type="hidden" name="id" value="{{.ID}}" />
                     <input type="submit" value="Delete" />
                 </form>
-                <a href="/edit/{{.ID}}" data-turbo-frame="_top">Edit</a>
+                <turbo-frame id="edit-todo-{{.ID}}">
+                    <a href="/edit/{{.ID}}">Edit</a>
+                </turbo-frame>
             </li>
         {{end}}
     </ol>
