@@ -1,0 +1,23 @@
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>TODO</title>
+</head>
+<body>
+<h1>Todo list</h1>
+<form method="post">
+    <fieldset>
+        <legend>Add a new thing to do</legend>
+        <label for="new-item">Task name</label>
+        <input type="text" id="new-item" />
+        <input type="submit" value="Add">
+    </fieldset>
+</form>
+<h2>Your to do list</h2>
+<ol>
+    {{range .}}
+        <li>{{.Name}}</li>
+    {{end}}
+</ol>
+</body>
+</html>
