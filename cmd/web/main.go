@@ -6,12 +6,16 @@ import (
 	"net/http"
 )
 
+const addr = ":8080"
+
 func main() {
 	server, err := todo.NewServer("../../html/*", todo.NewInMemoryRepo())
 	if err != nil {
 		log.Fatal(err)
 	}
-	err = http.ListenAndServe(":8080", server)
+
+	log.Println("listening on", addr)
+	err = http.ListenAndServe(addr, server)
 	if err != nil {
 		log.Fatal("cannot listen and serve", err)
 	}
