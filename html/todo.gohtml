@@ -4,15 +4,10 @@
     <title>TODO</title>
 </head>
 <body>
+<nav>
+    <a href="/add">Add</a>
+</nav>
 <h1>Todo list</h1>
-<form method="post">
-    <fieldset>
-        <legend>Add a new thing to do</legend>
-        <label for="new-item">Task name</label>
-        <input type="text" id="new-item" name="new-item" />
-        <input type="submit" value="Add">
-    </fieldset>
-</form>
 <h2>Your to do list</h2>
     <ol>
         {{range .}}
