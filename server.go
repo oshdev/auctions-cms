@@ -52,10 +52,17 @@ func NewServer(templateFolderPath string, repo Repo) (*Server, error) {
 		id := request.PostForm.Get("id")
 		todo := repo.GetTodo(id)
 		repo.DeleteTodo(id)
-		writer.Header().Add("content-type", "text/vnd.turbo-stream.html")
+		writer.Header().Add("Content-Type", "text/vnd.turbo-stream.html")
 
 		todoTemplate.ExecuteTemplate(writer, "toaster.partial.gohtml", todo)
 		todoTemplate.ExecuteTemplate(writer, "replace-todo-list-stream.gohtml", repo.GetTodos())
+	}).Methods(http.MethodPost).Headers("Accept", "text/vnd.turbo-stream.html")
+
+	router.HandleFunc("/delete", func(writer http.ResponseWriter, request *http.Request) {
+		request.ParseMultipartForm(1024)
+		id := request.PostForm.Get("id")
+		repo.DeleteTodo(id)
+		writer.Header().Add("Content-Type", "text/vnd.turbo-stream.html")
 		http.Redirect(writer, request, "/", http.StatusSeeOther)
 	}).Methods(http.MethodPost)
 
