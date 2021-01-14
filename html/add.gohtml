@@ -6,15 +6,6 @@
 </head>
 <body>
 <h1>Add A New Todo</h1>
-<turbo-frame id="add-todo">
-    <form method="post" action="/add" data-turbo-frame="todo-list">
-        <fieldset>
-            <legend>Add a new thing to do</legend>
-            <label for="new-item">Task name</label>
-            <input type="text" id="new-item" name="new-item" />
-            <input type="submit" value="Add">
-        </fieldset>
-    </form>
-</turbo-frame>
+{{template "add.partial.gohtml"}}
 </body>
 </html>
