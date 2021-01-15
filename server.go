@@ -62,7 +62,6 @@ func NewServer(templateFolderPath string, repo Repo) (*Server, error) {
 		request.ParseMultipartForm(1024)
 		id := request.PostForm.Get("id")
 		repo.DeleteTodo(id)
-		writer.Header().Add("Content-Type", "text/vnd.turbo-stream.html")
 		http.Redirect(writer, request, "/", http.StatusSeeOther)
 	}).Methods(http.MethodPost)
 
