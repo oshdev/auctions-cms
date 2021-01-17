@@ -13,7 +13,7 @@ type Repo interface {
 	AddTodo(name string)
 	DeleteTodo(id string)
 	GetTodo(id string) Todo
-	EditTodo(id string, name string)
+	EditTodo(id string, newName string)
 }
 
 func NewServer(templateFolderPath string, repo Repo) (*mux.Router, error) {
