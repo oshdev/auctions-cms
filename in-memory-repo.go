@@ -12,7 +12,7 @@ func NewInMemoryRepo() *InMemoryRepo {
 
 func (i *InMemoryRepo) GetTodo(id string) Todo {
 	for _, todo := range i.todos {
-		if todo.ID==id {
+		if todo.ID == id {
 			return todo
 		}
 	}

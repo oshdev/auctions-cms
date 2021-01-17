@@ -16,13 +16,7 @@ type Repo interface {
 	EditTodo(id string, name string)
 }
 
-type Server struct {
-	todoTemplate *template.Template
-	repo         Repo
-	router       *mux.Router
-}
-
-func NewServer(templateFolderPath string, repo Repo) (*Server, error) {
+func NewServer(templateFolderPath string, repo Repo) (*mux.Router, error) {
 	todoTemplate, err := template.ParseGlob(templateFolderPath)
 	if err != nil {
 		return nil, fmt.Errorf(
@@ -33,60 +27,73 @@ func NewServer(templateFolderPath string, repo Repo) (*Server, error) {
 	}
 	router := mux.NewRouter()
 
-	router.HandleFunc("/", func(writer http.ResponseWriter, request *http.Request) {
-		todoTemplate.ExecuteTemplate(writer, "todo.gohtml", repo.GetTodos())
-	}).Methods(http.MethodGet)
-
-	router.HandleFunc("/add", func(writer http.ResponseWriter, request *http.Request) {
-		todoTemplate.ExecuteTemplate(writer, "add.gohtml", repo.GetTodos())
-	}).Methods(http.MethodGet)
-
-	router.HandleFunc("/add", func(writer http.ResponseWriter, request *http.Request) {
-		request.ParseMultipartForm(1024)
-		repo.AddTodo(request.PostForm.Get("new-item"))
-		http.Redirect(writer, request, "/", http.StatusSeeOther)
-	}).Methods(http.MethodPost)
-
-	router.HandleFunc("/delete", func(writer http.ResponseWriter, request *http.Request) {
-		request.ParseMultipartForm(1024)
-		id := request.PostForm.Get("id")
-		todo := repo.GetTodo(id)
-		repo.DeleteTodo(id)
-		writer.Header().Add("Content-Type", "text/vnd.turbo-stream.html")
-
-		todoTemplate.ExecuteTemplate(writer, "toaster.partial.gohtml", todo)
-		todoTemplate.ExecuteTemplate(writer, "replace-todo-list-stream.gohtml", repo.GetTodos())
-	}).Methods(http.MethodPost).Headers("Accept", "text/vnd.turbo-stream.html")
-
-	router.HandleFunc("/delete", func(writer http.ResponseWriter, request *http.Request) {
-		request.ParseMultipartForm(1024)
-		id := request.PostForm.Get("id")
-		repo.DeleteTodo(id)
-		http.Redirect(writer, request, "/", http.StatusSeeOther)
-	}).Methods(http.MethodPost)
-
-	router.HandleFunc("/edit/{id}", func(writer http.ResponseWriter, request *http.Request) {
-		vars := mux.Vars(request)
-		id := vars["id"]
-		todoTemplate.ExecuteTemplate(writer, "edit.gohtml", repo.GetTodo(id))
-	}).Methods(http.MethodGet)
-
-	router.HandleFunc("/edit/{id}", func(writer http.ResponseWriter, request *http.Request) {
-		vars := mux.Vars(request)
-		request.ParseMultipartForm(1024)
-
-		id := vars["id"]
-		repo.EditTodo(id, request.PostForm.Get("updated-name"))
-		http.Redirect(writer, request, "/", http.StatusSeeOther)
-	}).Methods(http.MethodPost)
-
-	return &Server{
+	server := server{
 		todoTemplate: todoTemplate,
 		repo:         repo,
-		router:       router,
-	}, nil
+	}
+
+	router.HandleFunc("/", server.viewTodos).Methods(http.MethodGet)
+	router.HandleFunc("/add", server.viewAddTodoForm).Methods(http.MethodGet)
+	router.HandleFunc("/add", server.addTodo).Methods(http.MethodPost)
+	router.HandleFunc("/delete", server.deleteTodoStreamed).Methods(http.MethodPost).Headers("Accept", "text/vnd.turbo-stream.html")
+	router.HandleFunc("/delete", server.deleteTodo).Methods(http.MethodPost)
+	router.HandleFunc("/edit/{id}", server.viewEditTodoForm).Methods(http.MethodGet)
+	router.HandleFunc("/edit/{id}", server.editTodo).Methods(http.MethodPost)
+	return router, nil
 }
 
-func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	s.router.ServeHTTP(w, r)
+type server struct {
+	todoTemplate *template.Template
+	repo         Repo
+}
+
+func (s *server) viewTodos(writer http.ResponseWriter, r *http.Request) {
+	s.todoTemplate.ExecuteTemplate(writer, "todo.gohtml", s.repo.GetTodos())
+}
+
+func (s *server) viewAddTodoForm(writer http.ResponseWriter, r *http.Request) {
+	s.todoTemplate.ExecuteTemplate(writer, "add.gohtml", s.repo.GetTodos())
+}
+
+func (s *server) addTodo(writer http.ResponseWriter, r *http.Request) {
+	r.ParseMultipartForm(1024)
+	s.repo.AddTodo(r.PostForm.Get("new-item"))
+	http.Redirect(writer, r, "/", http.StatusSeeOther)
+}
+
+func (s *server) deleteTodoStreamed(writer http.ResponseWriter, r *http.Request) {
+	id := getIdFromForm(r)
+
+	todo := s.repo.GetTodo(id)
+	s.repo.DeleteTodo(id)
+	writer.Header().Add("Content-Type", "text/vnd.turbo-stream.html")
+
+	s.todoTemplate.ExecuteTemplate(writer, "toaster.partial.gohtml", todo)
+	s.todoTemplate.ExecuteTemplate(writer, "replace-todo-list-stream.gohtml", s.repo.GetTodos())
+}
+
+func (s *server) deleteTodo(writer http.ResponseWriter, r *http.Request) {
+	s.repo.DeleteTodo(getIdFromForm(r))
+	http.Redirect(writer, r, "/", http.StatusSeeOther)
+}
+
+func (s *server) viewEditTodoForm(writer http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	id := vars["id"]
+	s.todoTemplate.ExecuteTemplate(writer, "edit.gohtml", s.repo.GetTodo(id))
+}
+
+func (s *server) editTodo(writer http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	r.ParseMultipartForm(1024)
+
+	id := vars["id"]
+	s.repo.EditTodo(id, r.PostForm.Get("updated-name"))
+	http.Redirect(writer, r, "/", http.StatusSeeOther)
+}
+
+func getIdFromForm(r *http.Request) string {
+	r.ParseMultipartForm(1024)
+	id := r.PostForm.Get("id")
+	return id
 }
