@@ -13,7 +13,7 @@ type Repo interface {
 	AddAuction(name string, seller string, bidder string)
 	DeleteAuction(id string)
 	GetAuction(id string) Auction
-	EditAuction(id string, newName string, seller string, bidder string)
+	EditAuction(id string, newName string, seller string, bidder string, intelUrl string)
 }
 
 func NewServer(templateFolderPath string, repo Repo) (*mux.Router, error) {
@@ -88,7 +88,7 @@ func (s *server) editAuction(w http.ResponseWriter, r *http.Request) {
 	r.ParseMultipartForm(1024)
 
 	id := vars["id"]
-	s.repo.EditAuction(id, r.PostForm.Get("updated-name"), r.PostForm.Get("updated-seller"), r.PostForm.Get("updated-bidder"))
+	s.repo.EditAuction(id, r.PostForm.Get("updated-name"), r.PostForm.Get("updated-seller"), r.PostForm.Get("updated-bidder"), r.PostForm.Get("updated-url"))
 	redirectToHome(w, r)
 }
 
