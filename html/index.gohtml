@@ -4,13 +4,12 @@
 <nav>
     <a href="/add">Add</a>
 </nav>
-<h1>Todo list</h1>
-<turbo-frame id="add-todo" src="/add">
+<turbo-frame id="add-auction" src="/add">
 {{template "add.partial.gohtml"}}
 </turbo-frame>
 
-<h2>Your to do list</h2>
-{{template "todos.partial.gohtml" .}}
+<h1>Auctions list</h1>
+{{template "auctions.partial.gohtml" .}}
 <turbo-frame id="toaster"></turbo-frame>
 </body>
 </html>

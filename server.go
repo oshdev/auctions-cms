@@ -1,4 +1,4 @@
-package todo
+package auction
 
 import (
 	"fmt"
@@ -9,11 +9,11 @@ import (
 )
 
 type Repo interface {
-	GetTodos() []Todo
-	AddTodo(name string)
-	DeleteTodo(id string)
-	GetTodo(id string) Todo
-	EditTodo(id string, newName string)
+	GetAuctions() []Auction
+	AddAuction(name string)
+	DeleteAuction(id string)
+	GetAuction(id string) Auction
+	EditAuction(id string, newName string)
 }
 
 func NewServer(templateFolderPath string, repo Repo) (*mux.Router, error) {
@@ -48,39 +48,39 @@ type server struct {
 }
 
 func (s *server) viewTodos(w http.ResponseWriter, r *http.Request) {
-	s.todoTemplate.ExecuteTemplate(w, "todo.gohtml", s.repo.GetTodos())
+	s.todoTemplate.ExecuteTemplate(w, "index.gohtml", s.repo.GetAuctions())
 }
 
 func (s *server) viewAddTodoForm(w http.ResponseWriter, r *http.Request) {
-	s.todoTemplate.ExecuteTemplate(w, "add.gohtml", s.repo.GetTodos())
+	s.todoTemplate.ExecuteTemplate(w, "add.gohtml", s.repo.GetAuctions())
 }
 
 func (s *server) addTodo(w http.ResponseWriter, r *http.Request) {
 	r.ParseMultipartForm(1024)
-	s.repo.AddTodo(r.PostForm.Get("new-item"))
+	s.repo.AddAuction(r.PostForm.Get("new-item"))
 	redirectToHome(w, r)
 }
 
 func (s *server) deleteTodoStreamed(w http.ResponseWriter, r *http.Request) {
 	id := getIdFromForm(r)
 
-	todo := s.repo.GetTodo(id)
-	s.repo.DeleteTodo(id)
+	todo := s.repo.GetAuction(id)
+	s.repo.DeleteAuction(id)
 	w.Header().Add("Content-Type", "text/vnd.turbo-stream.html")
 
 	s.todoTemplate.ExecuteTemplate(w, "toaster.partial.gohtml", todo)
-	s.todoTemplate.ExecuteTemplate(w, "replace-todo-list-stream.gohtml", s.repo.GetTodos())
+	s.todoTemplate.ExecuteTemplate(w, "replace-auction-list-stream.gohtml", s.repo.GetAuctions())
 }
 
 func (s *server) deleteTodo(w http.ResponseWriter, r *http.Request) {
-	s.repo.DeleteTodo(getIdFromForm(r))
+	s.repo.DeleteAuction(getIdFromForm(r))
 	redirectToHome(w, r)
 }
 
 func (s *server) viewEditTodoForm(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id := vars["id"]
-	s.todoTemplate.ExecuteTemplate(w, "edit.gohtml", s.repo.GetTodo(id))
+	s.todoTemplate.ExecuteTemplate(w, "edit.gohtml", s.repo.GetAuction(id))
 }
 
 func (s *server) editTodo(w http.ResponseWriter, r *http.Request) {
@@ -88,7 +88,7 @@ func (s *server) editTodo(w http.ResponseWriter, r *http.Request) {
 	r.ParseMultipartForm(1024)
 
 	id := vars["id"]
-	s.repo.EditTodo(id, r.PostForm.Get("updated-name"))
+	s.repo.EditAuction(id, r.PostForm.Get("updated-name"))
 	redirectToHome(w, r)
 }
 

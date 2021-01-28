@@ -1,7 +1,7 @@
 package main
 
 import (
-	todo "go-hotwire"
+	auction "go-hotwire"
 	"log"
 	"net/http"
 )
@@ -9,7 +9,7 @@ import (
 const addr = ":8080"
 
 func main() {
-	server, err := todo.NewServer("../../html/*", todo.NewInMemoryRepo())
+	server, err := auction.NewServer("../../html/*", auction.NewInMemoryRepo())
 	if err != nil {
 		log.Fatal(err)
 	}

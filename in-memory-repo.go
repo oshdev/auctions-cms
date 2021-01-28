@@ -1,46 +1,46 @@
-package todo
+package auction
 
 type InMemoryRepo struct {
-	todos []Todo
+	auctions []Auction
 }
 
 func NewInMemoryRepo() *InMemoryRepo {
-	var todos []Todo
-	todos = append(todos, NewTodo("Implement Hotwire"))
-	return &InMemoryRepo{todos: todos}
+	var auctions []Auction
+	auctions = append(auctions, New("Super Company", "Riya", "Osh", "https://mergermarket.com/secret", "MIA"))
+	return &InMemoryRepo{auctions: auctions}
 }
 
-func (i *InMemoryRepo) GetTodo(id string) Todo {
-	for _, todo := range i.todos {
-		if todo.ID == id {
-			return todo
+func (i *InMemoryRepo) GetAuction(id string) Auction {
+	for _, auction := range i.auctions {
+		if auction.ID == id {
+			return auction
 		}
 	}
-	return NewTodo("wtf this doesnt exist")
+	return New("wtf this doesnt exist", "seller", "bidder", "url", "status")
 }
 
-func (i *InMemoryRepo) EditTodo(id string, name string) {
-	for index := range i.todos {
-		if i.todos[index].ID == id {
-			i.todos[index].Name = name
+func (i *InMemoryRepo) EditAuction(id string, assetName string) {
+	for index := range i.auctions {
+		if i.auctions[index].ID == id {
+			i.auctions[index].AssetName = assetName
 		}
 	}
 }
 
-func (i *InMemoryRepo) GetTodos() []Todo {
-	return i.todos
+func (i *InMemoryRepo) GetAuctions() []Auction {
+	return i.auctions
 }
 
-func (i *InMemoryRepo) AddTodo(name string) {
-	i.todos = append(i.todos, NewTodo(name))
+func (i *InMemoryRepo) AddAuction(name string) {
+	i.auctions = append(i.auctions, New(name, "seller", "bidder", "url", "status"))
 }
 
-func (i *InMemoryRepo) DeleteTodo(id string) {
-	var newList []Todo
-	for _, todo := range i.todos {
-		if todo.ID != id {
-			newList = append(newList, todo)
+func (i *InMemoryRepo) DeleteAuction(id string) {
+	var newList []Auction
+	for _, auction := range i.auctions {
+		if auction.ID != id {
+			newList = append(newList, auction)
 		}
 	}
-	i.todos = newList
+	i.auctions = newList
 }

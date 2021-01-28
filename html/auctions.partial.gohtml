@@ -1,13 +1,17 @@
-<turbo-frame id="todo-list">
+<turbo-frame id="auction-list">
   <ol>
       {{range .}}
         <li>
-            {{.Name}}
+          <h3>{{.AssetName}}</h3>
+          Seller: {{.Seller}}<br>
+          Bidder: {{.Bidder}}<br>
+          IntelUrl: {{.IntelUrl}}<br>
+          Status: {{.Status}}<br>
           <form method="post" action="/delete">
             <input type="hidden" name="id" value="{{.ID}}" />
             <input type="submit" value="Delete" />
           </form>
-          <turbo-frame id="edit-todo-{{.ID}}">
+          <turbo-frame id="edit-auction-{{.ID}}">
             <a href="/edit/{{.ID}}">Edit</a>
           </turbo-frame>
         </li>

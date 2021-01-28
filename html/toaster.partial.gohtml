@@ -1,13 +1,13 @@
 <turbo-stream action="replace" target="toaster">
   <template>
     <turbo-frame id="toaster">
-      <form action="/add" method="post" data-turbo-frame="todo-list">
-        <input type="hidden" name="new-item" value="{{.Name}}" />
+      <form action="/add" method="post" data-turbo-frame="auction-list">
+        <input type="hidden" name="new-item" value="{{.AssetName}}" />
         <input type="hidden" name="id" value="{{.ID}}" />
         <input type="submit" value="Undo" />
       </form>
     <div>
-      <p class="toaster">You have deleted {{.Name}}</p>
+      <p class="toaster">You have deleted {{.AssetName}}</p>
     </div>
     </turbo-frame>
   </template>

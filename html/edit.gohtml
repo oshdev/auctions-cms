@@ -1,13 +1,13 @@
 <html lang="en">
 {{ template "header.partial.gohtml"}}
 <body>
-<h1>Edit a Todo</h1>
-<turbo-frame id="edit-todo-{{.ID}}">
-<form method="post" action="/edit/{{.ID}}" data-turbo-frame="todo-list">
+<h1>Edit an auction</h1>
+<turbo-frame id="edit-auction-{{.ID}}">
+<form method="post" action="/edit/{{.ID}}" data-turbo-frame="auction-list">
     <fieldset>
-        <legend>Edit {{.Name}}</legend>
-        <label for="updated-name">Task name</label>
-        <input type="text" id="updated-name" name="updated-name" value="{{.Name}}" />
+        <legend>Edit {{.AssetName}}</legend>
+        <label for="updated-name">Asset name</label>
+        <input type="text" id="updated-name" name="updated-name" value="{{.AssetName}}" />
         <input type="submit" value="Update">
     </fieldset>
 </form>
