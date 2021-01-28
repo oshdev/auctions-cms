@@ -10,7 +10,7 @@ import (
 
 type Repo interface {
 	GetAuctions() []Auction
-	AddAuction(name string, seller string, bidder string)
+	AddAuction(name string, seller string, bidder string, intelUrl string)
 	DeleteAuction(id string)
 	GetAuction(id string) Auction
 	EditAuction(id string, newName string, seller string, bidder string, intelUrl string)
@@ -57,7 +57,7 @@ func (s *server) viewAddAuctionForm(w http.ResponseWriter, r *http.Request) {
 
 func (s *server) addAuction(w http.ResponseWriter, r *http.Request) {
 	r.ParseMultipartForm(1024)
-	s.repo.AddAuction(r.PostForm.Get("new-item"), r.PostForm.Get("seller"), r.PostForm.Get("bidder"))
+	s.repo.AddAuction(r.PostForm.Get("new-item"), r.PostForm.Get("seller"), r.PostForm.Get("bidder"), r.PostForm.Get("intelUrl"))
 	redirectToHome(w, r)
 }
 

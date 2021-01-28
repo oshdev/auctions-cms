@@ -34,8 +34,8 @@ func (i *InMemoryRepo) GetAuctions() []Auction {
 	return i.auctions
 }
 
-func (i *InMemoryRepo) AddAuction(name string, seller string, bidder string) {
-	i.auctions = append(i.auctions, New(name, seller, bidder, "url", "status"))
+func (i *InMemoryRepo) AddAuction(name string, seller string, bidder string, intelUrl string) {
+	i.auctions = append(i.auctions, New(name, seller, bidder, intelUrl, "status"))
 }
 
 func (i *InMemoryRepo) DeleteAuction(id string) {
