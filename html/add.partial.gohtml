@@ -2,8 +2,9 @@
     <form method="post" action="/add" data-turbo-frame="auction-list">
         <fieldset>
             <legend>Add a new auction</legend>
-            <label for="new-item">Asset name</label>
-            <input type="text" id="new-item" name="new-item" />
+            <label>Asset name <input type="text" id="new-item" name="new-item" /></label>
+            <label>Seller <input type="text" id="seller" name="seller" /></label>
+            <label>Bidder <input type="text" id="bidder" name="bidder" /></label>
             <input type="submit" value="Add">
         </fieldset>
     </form>

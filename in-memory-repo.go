@@ -19,10 +19,12 @@ func (i *InMemoryRepo) GetAuction(id string) Auction {
 	return New("wtf this doesnt exist", "seller", "bidder", "url", "status")
 }
 
-func (i *InMemoryRepo) EditAuction(id string, assetName string) {
+func (i *InMemoryRepo) EditAuction(id string, assetName string, seller string, bidder string) {
 	for index := range i.auctions {
 		if i.auctions[index].ID == id {
 			i.auctions[index].AssetName = assetName
+			i.auctions[index].Seller = seller
+			i.auctions[index].Bidder = bidder
 		}
 	}
 }
@@ -31,8 +33,8 @@ func (i *InMemoryRepo) GetAuctions() []Auction {
 	return i.auctions
 }
 
-func (i *InMemoryRepo) AddAuction(name string) {
-	i.auctions = append(i.auctions, New(name, "seller", "bidder", "url", "status"))
+func (i *InMemoryRepo) AddAuction(name string, seller string, bidder string) {
+	i.auctions = append(i.auctions, New(name, seller, bidder, "url", "status"))
 }
 
 func (i *InMemoryRepo) DeleteAuction(id string) {
